@@ -70,6 +70,15 @@ async def _get_allowed_group_id(client):
 # group=-1 means this runs BEFORE all other handlers (lower number = higher priority)
 @Client.on_message(filters.private & ~filters.user(ADMINS) & filters.incoming, group=-1)
 async def private_block_non_admins(_, message):
+    text = (message.text or "").strip()
+    if (
+        (message.command and message.command[0].split("@", 1)[0].lower() == "start")
+        or re.match(r"^/start(?:@\w+)?(?:\s|$)", text, flags=re.IGNORECASE)
+    ):
+        return
+
+    # Normal PM search text is blocked below; /start is allowed so welcome and
+    # file deep links from group results can be handled by the main start flow.
     keyboard = (
         InlineKeyboardMarkup(
             [[InlineKeyboardButton("Join Official Group", url=GRP_LNK)]]

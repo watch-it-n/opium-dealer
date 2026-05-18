@@ -1,0 +1,64 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.env
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Telegram/Pyrogram session files
+*.session
+*.session-journal
+*.session-shm
+*.session-wal
+
+# Logs and runtime output
+*.log
+*.LOG
+logs/
+downloads/
+temp/
+tmp/
+*.tmp
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local databases and generated data
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.bak
+
+# IDE, editor, and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker and deployment local overrides
+docker-compose.override.yml
+.docker/
