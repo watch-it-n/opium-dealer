@@ -56,11 +56,8 @@ async def save_file(media):
             print("Your Current File Database Is Full, Turn On Multiple Database Feature And Add Second File Mongodb To Save File.")
 
 def clean_file_name(file_name):
-    """Keep the filename intact except dots become spaces and our prefix is added."""
-    cleaned_name = str(file_name or "").replace(".", " ").strip()
-    if cleaned_name.startswith("@letswatchitnow"):
-        return cleaned_name
-    return f"@letswatchitnow {cleaned_name}".strip()
+    """Store the original filename exactly as Telegram provides it."""
+    return str(file_name or "").strip()
     
 def is_file_already_saved(file_id, file_name):
     """Check if the file is already saved in either collection."""

@@ -37,9 +37,12 @@ def _safe_text(value, default="N/A"):
 
 
 def format_file_name(file_name, prefix=True):
-    name = str(file_name or "").replace(".", " ").strip()
-    if prefix and not name.startswith("@letswatchitnow"):
-        return f"@letswatchitnow {name}".strip()
+    name = str(file_name or "").strip()
+    credit = "@letswatchitnow"
+    if name.startswith(credit):
+        name = name[len(credit):].strip()
+    if prefix:
+        return f"{credit} {name}".strip()
     return name
 
 
