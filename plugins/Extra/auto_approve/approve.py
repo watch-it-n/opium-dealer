@@ -11,7 +11,7 @@ from database.ia_filterdb import get_file_details, unpack_new_file_id, get_bad_f
 from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
 from database.join_reqs import JoinReqs
 from info import *
-from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_tutorial, get_seconds
+from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_tutorial, get_seconds, format_file_name
 from database.connections_mdb import active_connection
 from urllib.parse import quote_plus
 from poppy.util.file_properties import get_name, get_hash, get_media_file_size
@@ -128,11 +128,11 @@ async def auto_approve(client, message: ChatJoinRequest):
             f_caption=msg.get("caption", "")
             if BATCH_FILE_CAPTION:
                 try:
-                    f_caption=BATCH_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    f_caption=BATCH_FILE_CAPTION.format(file_name='' if title is None else format_file_name(title), file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
                 except:
                     f_caption=f_caption
-            if f_caption is None:
-                f_caption = f"{title}"
+            if not BATCH_FILE_CAPTION or f_caption is None:
+                f_caption = format_file_name(title)
             try:
                 if STREAM_MODE == True:
                     log_msg = await client.send_cached_media(chat_id=LOG_CHANNEL, file_id=msg.get("file_id"))
@@ -202,9 +202,11 @@ async def auto_approve(client, message: ChatJoinRequest):
                 f_caption = getattr(msg, 'caption', file_name)
                 if BATCH_FILE_CAPTION:
                     try:
-                        f_caption=BATCH_FILE_CAPTION.format(file_name=file_name, file_size='' if size is None else size, file_caption=f_caption)
+                        f_caption=BATCH_FILE_CAPTION.format(file_name=format_file_name(file_name), file_size='' if size is None else size, file_caption=f_caption)
                     except:
                         f_caption = getattr(msg, 'caption', '')
+                else:
+                    f_caption = format_file_name(file_name)
                 file_id = file.file_id
                 if STREAM_MODE == True:
                     log_msg = await client.send_cached_media(chat_id=LOG_CHANNEL, file_id=file_id)
@@ -315,11 +317,11 @@ async def auto_approve(client, message: ChatJoinRequest):
             f_caption=files1["caption"]
             if CUSTOM_FILE_CAPTION:
                 try:
-                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    f_caption=CUSTOM_FILE_CAPTION.format(file_name='' if title is None else format_file_name(title), file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
                 except:
                     f_caption=f_caption
-            if f_caption is None:
-                f_caption = f"@letswatchitnow {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1['file_name'].split()))}"
+            if not CUSTOM_FILE_CAPTION or f_caption is None:
+                f_caption = format_file_name(files1['file_name'])
             if not await db.has_premium_access(message.from_user.id):
                 if not await check_verification(client, message.from_user.id) and VERIFY == True:
                     btn = [[
@@ -415,10 +417,10 @@ async def auto_approve(client, message: ChatJoinRequest):
             file = getattr(msg, filetype.value)
             title = file.file_name
             size=get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
+            f_caption = f"<code>{format_file_name(title)}</code>"
             if CUSTOM_FILE_CAPTION:
                 try:
-                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='')
+                    f_caption=CUSTOM_FILE_CAPTION.format(file_name='' if title is None else format_file_name(title), file_size='' if size is None else size, file_caption='')
                 except:
                     return
             await msg.edit_caption(caption=f_caption)
@@ -438,11 +440,11 @@ async def auto_approve(client, message: ChatJoinRequest):
     f_caption=files["caption"]
     if CUSTOM_FILE_CAPTION:
         try:
-            f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+            f_caption=CUSTOM_FILE_CAPTION.format(file_name='' if title is None else format_file_name(title), file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
         except:
             f_caption=f_caption
-    if f_caption is None:
-        f_caption = f"@letswatchitnow {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files['file_name'].split()))}"
+    if not CUSTOM_FILE_CAPTION or f_caption is None:
+        f_caption = format_file_name(files['file_name'])
     if not await db.has_premium_access(message.from_user.id):
         if not await check_verification(client, message.from_user.id) and VERIFY == True:
             btn = [[

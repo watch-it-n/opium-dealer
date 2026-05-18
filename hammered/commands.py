@@ -14,7 +14,7 @@ from database.users_chats_db import db
 from hammered.database.userdb import clonedb
 from info import *
 from shortzy import Shortzy
-from utils import get_size, temp, get_seconds, get_clone_shortlink
+from utils import get_size, temp, get_seconds, get_clone_shortlink, format_file_name
 logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.command("start") & filters.incoming)
@@ -104,11 +104,9 @@ async def start(client, message):
             file_id = mg.file_id
             files_ = await get_file_details(vj_file_id)
             files1 = files_
-            title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1['file_name'].split()))
+            title = format_file_name(files1['file_name'])
             size=get_size(files1['file_size'])
-            f_caption=files1['caption']
-            if f_caption is None:
-                f_caption = f"@letswatchitnow {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1['file_name'].split()))}"
+            f_caption = title
             if cd["update_channel_link"] != None:
                 up = cd["update_channel_link"]
                 button = [[
@@ -152,11 +150,9 @@ async def start(client, message):
     if not files_:
         return await message.reply('**No such file exist.**')
     files = files_
-    title = ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files['file_name'].split()))
+    title = format_file_name(files['file_name'])
     size=get_size(files['file_size'])
-    f_caption=files['caption']
-    if f_caption is None:
-        f_caption = f"@letswatchitnow {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files['file_name'].split()))}"
+    f_caption = title
     if cd["update_channel_link"] != None:
         up = cd["update_channel_link"]
         button = [[

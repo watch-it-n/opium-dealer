@@ -12,7 +12,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
-from utils import get_size, is_subscribed, pub_is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_shortlink, get_tutorial, send_all, get_cap, delete_messages_later
+from utils import get_size, is_subscribed, pub_is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, get_shortlink, get_tutorial, send_all, get_cap, delete_messages_later, format_file_name
 from database.users_chats_db import db
 from database.ia_filterdb import get_file_details, get_search_results, get_bad_files
 
@@ -114,7 +114,7 @@ async def next_page(bot, query):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -265,7 +265,7 @@ async def filter_yearss_cb_handler(client: Client, query: CallbackQuery):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -377,7 +377,7 @@ async def filter_episodes_cb_handler(client: Client, query: CallbackQuery):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -491,7 +491,7 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -632,7 +632,7 @@ async def filter_seasons_cb_handler(client: Client, query: CallbackQuery):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -740,7 +740,7 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"⚜️[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"⚜️[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files
@@ -825,9 +825,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         files = files_
         title = files['file_name']
         size = get_size(files['file_size'])
-        f_caption = files['caption']
-        if f_caption is None:
-            f_caption = f"{files['file_name']}"
+        f_caption = format_file_name(files['file_name'])
 
         try:
             if settings['url']:
@@ -945,7 +943,7 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
     btn = [
         [
             InlineKeyboardButton(
-                text=f"[{get_size(filevj['file_size'])}] {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), filevj['file_name'].split()))}", callback_data=f"file#{filevj['file_id']}"
+                text=f"[{get_size(filevj['file_size'])}] {format_file_name(filevj['file_name'])}", callback_data=f"file#{filevj['file_id']}"
             ),
         ]
         for filevj in files

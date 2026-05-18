@@ -7,7 +7,7 @@ from pyrogram import Client, emoji, filters
 from pyrogram.errors.exceptions.bad_request_400 import QueryIdInvalid
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultCachedDocument, InlineQuery
 from database.ia_filterdb import get_search_results
-from utils import is_subscribed, get_size, temp
+from utils import is_subscribed, get_size, temp, format_file_name
 from info import CACHE_TIME, AUTH_USERS, AUTH_CHANNEL, CUSTOM_FILE_CAPTION
 from database.connections_mdb import active_connection
 
@@ -61,20 +61,20 @@ async def answer(bot, query):
     files, next_offset, total = await get_search_results(chat_id, string, file_type=file_type, max_results=10, offset=offset)
 
     for file in files:
-        title=file['file_name']
+        title=format_file_name(file['file_name'])
         size=get_size(file['file_size'])
         f_caption=file['caption']
         if CUSTOM_FILE_CAPTION:
             try:
-                f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                f_caption=CUSTOM_FILE_CAPTION.format(file_name=title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
             except Exception as e:
                 logger.exception(e)
                 f_caption=f_caption
-        if f_caption is None:
-            f_caption = f"{file['file_name']}"
+        if not CUSTOM_FILE_CAPTION or f_caption is None:
+            f_caption = title
         results.append(
             InlineQueryResultCachedDocument(
-                title=file['file_name'],
+                title=title,
                 document_file_id=file['file_id'],
                 caption=f_caption,
                 description=f'Size: {get_size(file["file_size"])}',
