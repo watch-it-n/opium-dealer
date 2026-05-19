@@ -18,6 +18,7 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("cinemagoer").setLevel(logging.ERROR)
 
 from pyrogram import Client, idle
+from pyrogram.types.messages_and_media.sticker import Sticker
 from database.users_chats_db import db
 from info import *
 from utils import temp
@@ -31,6 +32,21 @@ from plugins.clone import restart_bots
 from poppy.bot import PoppySeedsBot
 from poppy.util.keepalive import ping_server
 from poppy.bot.clients import initialize_clients
+
+_get_sticker_set_name = Sticker._get_sticker_set_name
+
+
+async def safe_get_sticker_set_name(invoke, sticker_set):
+    try:
+        return await _get_sticker_set_name(invoke, sticker_set)
+    except OSError as e:
+        if "Connection lost" in str(e):
+            logging.warning("Skipped sticker-set lookup because Telegram connection was lost")
+            return ""
+        raise
+
+
+Sticker._get_sticker_set_name = staticmethod(safe_get_sticker_set_name)
 
 ppath = "plugins/*.py"
 files = glob.glob(ppath)

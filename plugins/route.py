@@ -19,6 +19,10 @@ routes = web.RouteTableDef()
 async def root_route_handler(request):
     return web.json_response("LetsWatchFilterBot")
 
+@routes.get("/favicon.ico", allow_head=True)
+async def favicon_handler(request):
+    return web.Response(status=204)
+
 @routes.get(r"/watch/{path:\S+}", allow_head=True)
 async def stream_handler(request: web.Request):
     try:
@@ -36,7 +40,7 @@ async def stream_handler(request: web.Request):
     except FIleNotFound as e:
         raise web.HTTPNotFound(text=e.message)
     except (AttributeError, BadStatusLine, ConnectionResetError):
-        pass
+        raise web.HTTPNotFound(text="File not found")
     except Exception as e:
         logging.critical(e.with_traceback(None))
         raise web.HTTPInternalServerError(text=str(e))
@@ -58,7 +62,7 @@ async def stream_handler(request: web.Request):
     except FIleNotFound as e:
         raise web.HTTPNotFound(text=e.message)
     except (AttributeError, BadStatusLine, ConnectionResetError):
-        pass
+        raise web.HTTPNotFound(text="File not found")
     except Exception as e:
         logging.critical(e.with_traceback(None))
         raise web.HTTPInternalServerError(text=str(e))

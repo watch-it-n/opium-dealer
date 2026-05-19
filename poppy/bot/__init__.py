@@ -17,7 +17,7 @@ class PoppySeedsBot(Client):
             api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
-            workers=150,
+            workers=32,
             plugins={"root": "plugins"},
             sleep_threshold=5,
         )
