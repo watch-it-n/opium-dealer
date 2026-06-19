@@ -2625,6 +2625,12 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
             files, offset, total_results = await get_search_results(message.chat.id ,search, offset=0, filter=True)
             settings = await get_settings(message.chat.id)
             if not files:
+                first_word_search = search.split()[0] if search.split() else ""
+                if first_word_search and first_word_search != search:
+                    files, offset, total_results = await get_search_results(message.chat.id, first_word_search, offset=0, filter=True)
+                    if files:
+                        search = first_word_search
+            if not files:
                 if settings["spell_check"]:
                     return await advantage_spell_chok(client, name, msg, reply_msg, ai_search)
                 else:
