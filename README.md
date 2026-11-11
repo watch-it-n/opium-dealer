@@ -46,8 +46,12 @@ bot replaces the final filename component before its extension with `infinity`
 and separates components with dots. For example,
 `a_bbs_primexofficial.mkv`, `a bbs primexofficial.mkv`, and
 `a.bbs.primexofficial.mp4` become `a.bbs.infinity.mkv` or
-`a.bbs.infinity.mp4`. Existing database records are normalized when read;
-Telegram's cached download keeps the original uploaded filename.
+`a.bbs.infinity.mp4`. The uploaded media caption is stored separately and its
+filename word immediately before `.mkv` or `.mp4` is also replaced with
+`infinity` (for example, `Movie.Name.mkv` becomes `Movie.infinity.mkv`).
+Existing database records and captions are normalized when read, so this also
+applies to files already stored. Telegram's cached download keeps the original
+uploaded filename; the bot sends the stored, normalized caption with the file.
 
 ## Title Requests
 
