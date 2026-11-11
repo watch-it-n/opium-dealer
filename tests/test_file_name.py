@@ -12,6 +12,12 @@ class ReplaceLastFilenameWordTests(unittest.TestCase):
             ("a_bbs_primexofficial.mp4", "a.bbs.infinity.mp4"),
             ("a bbs primexofficial.mp4", "a.bbs.infinity.mp4"),
             ("a.bbs.primexofficial.mp4", "a.bbs.infinity.mp4"),
+            (
+                "VisionQuest (2026) S01E08 720p 10bit DSNP WEBRip HEVC x265 "
+                "[ JHS Hindi DDP5.1 + English AAC2.0 ] ESub ~ LUCi ~ PSA.mkv",
+                "VisionQuest.(2026).S01E08.720p.10bit.DSNP.WEBRip.HEVC.x265."
+                "[.JHS.Hindi.DDP5.1.+.English.AAC2.0.].ESub.~.LUCi.~.infinity.mkv",
+            ),
         )
 
         for original, expected in examples:
