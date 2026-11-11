@@ -1,7 +1,7 @@
 import unittest
 
 from poppy.util.file_name import (
-    replace_caption_filename_word,
+    append_infinity_to_caption_filename,
     replace_last_filename_word,
 )
 
@@ -29,24 +29,25 @@ class ReplaceLastFilenameWordTests(unittest.TestCase):
 
 
 class ReplaceCaptionFilenameWordTests(unittest.TestCase):
-    def test_replaces_filename_word_before_video_extension(self):
+    def test_appends_infinity_to_filename_at_caption_end(self):
         examples = (
-            ("Movie Name.mkv", "Movie infinity.mkv"),
-            ("Movie_Name.mp4", "Movie_infinity.mp4"),
-            ("<b>Movie.Name.MKV</b>", "<b>Movie.infinity.MKV</b>"),
-            (
-                "First Movie.mkv and Second Movie.mp4",
-                "First infinity.mkv and Second infinity.mp4",
-            ),
+            ("Movie Name.mkv", "Movie Name.Infinity.mkv"),
+            ("Movie_Name.mp4", "Movie_Name.Infinity.mp4"),
+            ("<b>Movie.Name.MKV</b>", "<b>Movie.Name.Infinity.MKV</b>"),
+            ("Movie.Name.mkv extra text", "Movie.Name.mkv extra text"),
         )
 
         for original, expected in examples:
             with self.subTest(original=original):
-                self.assertEqual(replace_caption_filename_word(original), expected)
+                self.assertEqual(append_infinity_to_caption_filename(original), expected)
+
+    def test_does_not_append_infinity_twice(self):
+        caption = "Movie.Name.Infinity.mkv"
+        self.assertEqual(append_infinity_to_caption_filename(caption), caption)
 
     def test_preserves_captions_without_video_filenames(self):
         caption = "<b>Watch this movie!</b>"
-        self.assertEqual(replace_caption_filename_word(caption), caption)
+        self.assertEqual(append_infinity_to_caption_filename(caption), caption)
 
 
 if __name__ == "__main__":

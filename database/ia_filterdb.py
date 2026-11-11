@@ -9,7 +9,7 @@ from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 from info import FILE_DB_URI, SEC_FILE_DB_URI, DATABASE_NAME, COLLECTION_NAME, MULTIPLE_DATABASE, USE_CAPTION_FILTER, MAX_B_TN
 from poppy.util.file_name import (
-    replace_caption_filename_word,
+    append_infinity_to_caption_filename,
     replace_last_filename_word,
 )
 
@@ -66,8 +66,8 @@ def clean_file_name(file_name):
 
 
 def clean_media_caption(caption):
-    """Replace media filename words in captions without changing other caption text."""
-    return replace_caption_filename_word(caption) if caption else caption
+    """Append .Infinity before a caption's final video-file extension."""
+    return append_infinity_to_caption_filename(caption) if caption else caption
 
 
 def _normalize_file_names(files):

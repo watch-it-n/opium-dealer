@@ -1,8 +1,8 @@
 import os
 import re
 
-_CAPTION_FILENAME_WORD = re.compile(
-    r"(?P<word>[^\W_]+)(?P<extension>\.(?:mkv|mp4)\b)",
+_CAPTION_VIDEO_EXTENSION = re.compile(
+    r"\.(?P<extension>mkv|mp4)(?=(?:</[^>]+>\s*)*$)",
     flags=re.IGNORECASE,
 )
 
@@ -19,13 +19,16 @@ def replace_last_filename_word(file_name: str) -> str:
     return f"{'.'.join(parts)}{extension}"
 
 
-def replace_caption_filename_word(caption: str) -> str:
-    parts = re.split(r"(<[^>]*>)", caption)
-    return "".join(
-        part
-        if part.startswith("<")
-        else _CAPTION_FILENAME_WORD.sub(
-            lambda match: f"infinity{match.group('extension')}", part
-        )
-        for part in parts
+def append_infinity_to_caption_filename(caption: str) -> str:
+    match = _CAPTION_VIDEO_EXTENSION.search(caption)
+    if not match:
+        return caption
+
+    stem = caption[:match.start()]
+    if stem.lower().endswith(".infinity"):
+        return caption
+
+    return (
+        f"{stem}.Infinity.{match.group('extension')}"
+        f"{caption[match.end():]}"
     )
