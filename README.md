@@ -41,10 +41,13 @@ python3 bot.py
 
 ## Filename Display
 
-When a file is saved, the bot replaces the final word before its extension with
-`Infinity` (for example, `Any name dxb.mkv` becomes `Any name Infinity.mkv`).
-The transformed name is stored and shown by the bot; Telegram's cached download
-keeps the original uploaded filename.
+When a file is saved, and whenever an existing file is returned by search, the
+bot replaces the final filename component before its extension with `infinity`
+and separates components with dots. For example,
+`a_bbs_primexofficial.mkv`, `a bbs primexofficial.mkv`, and
+`a.bbs.primexofficial.mp4` become `a.bbs.infinity.mkv` or
+`a.bbs.infinity.mp4`. Existing database records are normalized when read;
+Telegram's cached download keeps the original uploaded filename.
 
 ## Title Requests
 

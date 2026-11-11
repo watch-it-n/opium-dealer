@@ -57,9 +57,16 @@ async def save_file(media):
             print("Your Current File Database Is Full, Turn On Multiple Database Feature And Add Second File Mongodb To Save File.")
 
 def clean_file_name(file_name):
-    """Store the filename with its final word replaced by Infinity."""
+    """Store the filename with its final component replaced by infinity."""
     return replace_last_filename_word(file_name)
-    
+
+
+def _normalize_file_names(files):
+    for file in files:
+        file['file_name'] = clean_file_name(file.get('file_name'))
+    return files
+
+
 def is_file_already_saved(file_id, file_name):
     """Check whether this Telegram file ID is already saved in either collection."""
     found = {'file_id': file_id}
@@ -104,7 +111,7 @@ async def get_search_results(chat_id, query, file_type=None, max_results=10, off
     total_results = col.count_documents(filter) if not MULTIPLE_DATABASE else (col.count_documents(filter) + sec_col.count_documents(filter))
     next_offset = "" if (offset + max_results) >= total_results else (offset + max_results)
 
-    return files, next_offset, total_results
+    return _normalize_file_names(files), next_offset, total_results
 
 async def get_bad_files(query, file_type=None, use_filter=False):
     """For given query return (results, next_offset)"""
@@ -136,10 +143,13 @@ async def get_bad_files(query, file_type=None, use_filter=False):
 
     files = (find_documents(col) + find_documents(sec_col) if MULTIPLE_DATABASE else find_documents(col))
 
-    return files, total_results
+    return _normalize_file_names(files), total_results
 
 async def get_file_details(query):
-    return col.find_one({'file_id': query}) or sec_col.find_one({'file_id': query})
+    file = col.find_one({'file_id': query}) or sec_col.find_one({'file_id': query})
+    if file:
+        _normalize_file_names([file])
+    return file
 
 def encode_file_id(s: bytes) -> str:
     r = b""
